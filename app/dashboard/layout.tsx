@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Logo from "@/app/components/brand/Logo";
+import LogoutButton from "@/app/components/LogoutButton";
 
 const NAV_ITEMS = [
   {
@@ -56,15 +57,12 @@ export default function DashboardLayout({
           ))}
         </nav>
         <div className="p-4 border-t border-slate-100">
-          <Link
-            href="/auth/login"
-            className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition-colors"
-          >
+          <LogoutButton className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition-colors w-full text-left">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
             Log Out
-          </Link>
+          </LogoutButton>
         </div>
       </aside>
 

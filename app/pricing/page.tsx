@@ -4,9 +4,10 @@ import Footer from "@/app/components/Footer";
 import { PACKAGES } from "@/lib/constants";
 
 export const metadata = {
-  title: "Pricing — RankMyBiz",
+  title: "Pricing — Business Listing Plans for Malaysian SMEs",
   description:
-    "Simple, transparent pricing for F&B and catering businesses in Malaysia. No hidden fees.",
+    "Get your business listed on RankMyBiz from RM99/month. Simple pricing, no hidden fees, no contracts. Compare Starter, Growth, and Pro plans.",
+  alternates: { canonical: "/pricing" },
 };
 
 export default function PricingPage() {

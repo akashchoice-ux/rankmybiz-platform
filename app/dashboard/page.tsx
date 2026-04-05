@@ -1,18 +1,13 @@
 import Link from "next/link";
 import Card from "@/app/components/ui/Card";
 import StatusBadge from "@/app/components/ui/StatusBadge";
-import type { ListingStatus } from "@/types";
+import { SEED_LISTINGS } from "@/lib/seed-data";
 
-// Mock data — replace with Supabase query
-const mockListings = [
-  {
-    id: "1",
-    name: "Ahmad's Kitchen",
-    status: "pending_review" as ListingStatus,
-    package: "Growth",
-    submitted: "2 Apr 2026",
-  },
-];
+// In production: query listings where user_id = current user
+const myListings = SEED_LISTINGS.filter((l) => !l.is_demo);
+const liveCount = myListings.filter((l) => l.status === "live").length;
+const reviewCount = myListings.filter((l) => l.status === "pending_review").length;
+const draftCount = myListings.filter((l) => l.status === "draft" || l.status === "pending_payment").length;
 
 export default function DashboardPage() {
   return (
@@ -30,10 +25,10 @@ export default function DashboardPage() {
       {/* Quick stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
         {[
-          { label: "Total Listings", value: "1", color: "text-slate-900" },
-          { label: "Live Now", value: "0", color: "text-success" },
-          { label: "Under Review", value: "1", color: "text-brand" },
-          { label: "Action Needed", value: "0", color: "text-warning" },
+          { label: "Total Listings", value: String(myListings.length), color: "text-slate-900" },
+          { label: "Live Now", value: String(liveCount), color: "text-success" },
+          { label: "Under Review", value: String(reviewCount), color: "text-brand" },
+          { label: "Action Needed", value: String(draftCount), color: "text-warning" },
         ].map((stat) => (
           <Card key={stat.label} padding="md" shadow>
             <p className="text-xs text-slate-500 font-medium mb-1">{stat.label}</p>
@@ -57,7 +52,7 @@ export default function DashboardPage() {
           </Link>
         </div>
 
-        {mockListings.length === 0 ? (
+        {myListings.length === 0 ? (
           <div className="py-16 text-center">
             <div className="w-12 h-12 rounded-2xl bg-brand-light flex items-center justify-center mx-auto mb-4">
               <svg className="w-6 h-6 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -77,7 +72,7 @@ export default function DashboardPage() {
           </div>
         ) : (
           <div className="divide-y divide-slate-100">
-            {mockListings.map((listing) => (
+            {myListings.map((listing) => (
               <Link
                 key={listing.id}
                 href={`/dashboard/listings/${listing.id}`}
@@ -88,7 +83,7 @@ export default function DashboardPage() {
                     {listing.name}
                   </p>
                   <p className="text-xs text-slate-400 mt-0.5">
-                    {listing.package} · Submitted {listing.submitted}
+                    {listing.category} · {listing.city} · {listing.package_name}
                   </p>
                 </div>
                 <StatusBadge status={listing.status} />

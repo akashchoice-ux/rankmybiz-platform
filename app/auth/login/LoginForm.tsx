@@ -1,11 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Input from "@/app/components/ui/Input";
 import Button from "@/app/components/ui/Button";
 
 export default function LoginForm() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect") ?? "/dashboard";
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -16,12 +21,29 @@ export default function LoginForm() {
     setError("");
     setIsLoading(true);
 
-    // TODO: Supabase auth.signInWithPassword
     try {
-      await new Promise((res) => setTimeout(res, 1000)); // placeholder
-      // On success: router.push('/dashboard')
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error ?? "Invalid email or password.");
+        return;
+      }
+
+      // Redirect admin to /admin, SME to /dashboard (or the originally requested page)
+      if (data.user?.role === "admin") {
+        router.push(redirect.startsWith("/admin") ? redirect : "/admin");
+      } else {
+        router.push(redirect);
+      }
+      router.refresh();
     } catch {
-      setError("Invalid email or password. Please try again.");
+      setError("Something went wrong. Please try again.");
     } finally {
       setIsLoading(false);
     }

@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import Logo from "@/app/components/brand/Logo";
 import LoginForm from "./LoginForm";
@@ -32,7 +33,9 @@ export default function LoginPage() {
                 Log in to your RankMyBiz account
               </p>
             </div>
-            <LoginForm />
+            <Suspense fallback={null}>
+              <LoginForm />
+            </Suspense>
           </div>
           <p className="text-center text-xs text-slate-400 mt-6">
             By continuing, you agree to our{" "}
