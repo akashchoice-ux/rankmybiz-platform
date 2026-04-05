@@ -1,3 +1,3 @@
 # RankMyBiz
 
-AI SEO & Lead Generation Platform
+AI SEO & Lead Generation Platform for SMEs
