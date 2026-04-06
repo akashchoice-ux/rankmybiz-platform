@@ -2,7 +2,7 @@ import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM = process.env.RESEND_FROM_EMAIL ?? "noreply@rankmybiz.ai";
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "admin@rankmybiz.ai";
+const ADMIN_EMAIL = process.env.ADMIN_NOTIFY_EMAIL ?? process.env.ADMIN_EMAIL ?? "admin@rankmybiz.ai";
 
 /** Notify admin that a new listing was submitted and needs review. */
 export async function sendSubmissionNotification(listing: {
