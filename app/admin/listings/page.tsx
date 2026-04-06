@@ -2,7 +2,7 @@ import Link from "next/link";
 import Card from "@/app/components/ui/Card";
 import StatusBadge from "@/app/components/ui/StatusBadge";
 import type { ListingStatus } from "@/types";
-import { SEED_LISTINGS } from "@/lib/seed-data";
+import { fetchAllListingsForAdmin } from "@/lib/listings-db";
 
 function fmtDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-MY", {
@@ -29,9 +29,10 @@ export default async function AdminListingsPage({ searchParams }: Props) {
   const params = await searchParams;
   const statusFilter = (params?.status as ListingStatus) || "";
 
+  const allListings = await fetchAllListingsForAdmin();
   const filtered = statusFilter
-    ? SEED_LISTINGS.filter((l) => l.status === statusFilter)
-    : SEED_LISTINGS;
+    ? allListings.filter((l) => l.status === statusFilter)
+    : allListings;
 
   return (
     <div className="max-w-5xl mx-auto">
@@ -47,8 +48,8 @@ export default async function AdminListingsPage({ searchParams }: Props) {
         {STATUS_FILTERS.map((f) => {
           const isActive = statusFilter === f.value;
           const count = f.value
-            ? SEED_LISTINGS.filter((l) => l.status === f.value).length
-            : SEED_LISTINGS.length;
+            ? allListings.filter((l) => l.status === f.value).length
+            : allListings.length;
           return (
             <Link
               key={f.value}
@@ -107,7 +108,7 @@ export default async function AdminListingsPage({ searchParams }: Props) {
                     <td className="px-5 py-3.5 text-slate-500">{l.city}</td>
                     <td className="px-5 py-3.5 text-slate-400">{fmtDate(l.submitted_at)}</td>
                     <td className="px-5 py-3.5">
-                      <StatusBadge status={l.status} />
+                      <StatusBadge status={l.status as ListingStatus} />
                     </td>
                     <td className="px-5 py-3.5 text-right">
                       <Link

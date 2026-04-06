@@ -186,10 +186,10 @@ export const MY_STATES: { value: string; label: string }[] = [
 // ─── Bank Transfer Details ────────────────────────────────────────────────────
 
 export const BANK_TRANSFER_DETAILS = {
-  bank_name: "Maybank",
-  account_name: "RankMyBiz Sdn Bhd",
-  account_number: "5621 2345 6789",
-  swift_code: "MBBEMYKL",
+  bank_name: "RHB Bank Berhad",
+  account_name: "ROMAX BUILD WORKS",
+  account_number: "2120 2200 1664 36",
+  account_type: "Savings/Current Account",
   reference_prefix: "RMB",
 } as const;
 

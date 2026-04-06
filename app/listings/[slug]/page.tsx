@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ALL_CATEGORIES_STATIC } from "@/lib/constants";
-import { getListingBySlug, getLiveListings } from "@/lib/seed-data";
+import { fetchListingBySlug, fetchLiveListings } from "@/lib/listings-db";
 import Breadcrumbs from "@/app/components/Breadcrumbs";
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
@@ -15,7 +15,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const listing = getListingBySlug(slug);
+  const listing = await fetchListingBySlug(slug);
   if (!listing) return {};
 
   const title = `${listing.name} — ${listing.category} in ${listing.city}`;
@@ -43,14 +43,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ListingPage({ params }: Props) {
   const { slug } = await params;
-  const listing = getListingBySlug(slug);
+  const listing = await fetchListingBySlug(slug);
 
-  if (!listing || listing.status !== "live") notFound();
+  if (!listing) notFound();
 
   const catMeta = ALL_CATEGORIES_STATIC.find(
-    (c) => c.slug === listing.categorySlug
+    (c) => c.slug === listing.category_slug
   );
-  const attrs = listing.custom_attributes;
+  const attrs = (listing.custom_attributes ?? {}) as Record<string, string | number | boolean | string[] | null>;
   const isRenovation = listing.industry === "renovation";
 
   // schema.org JSON-LD
@@ -83,8 +83,9 @@ export default async function ListingPage({ params }: Props) {
   };
 
   // Related listings — same category, different listing
-  const related = getLiveListings()
-    .filter((l) => l.categorySlug === listing.categorySlug && l.id !== listing.id)
+  const allLive = await fetchLiveListings();
+  const related = allLive
+    .filter((l) => l.category_slug === listing.category_slug && l.id !== listing.id)
     .slice(0, 3);
 
   const citySlug = listing.city.toLowerCase().replace(/\s+/g, "-");
@@ -105,8 +106,8 @@ export default async function ListingPage({ params }: Props) {
               items={[
                 { label: "Home", href: "/" },
                 { label: "Listings", href: "/listings" },
-                { label: listing.category, href: `/${listing.categorySlug}/${citySlug}` },
-                { label: listing.city, href: `/${listing.categorySlug}/${citySlug}` },
+                { label: listing.category, href: `/${listing.category_slug}/${citySlug}` },
+                { label: listing.city, href: `/${listing.category_slug}/${citySlug}` },
                 { label: listing.name },
               ]}
             />

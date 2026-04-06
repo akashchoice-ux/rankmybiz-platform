@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { PLATFORM_INDUSTRIES } from "@/lib/constants";
-import { getLiveListings, type SeedListing } from "@/lib/seed-data";
+import { fetchLiveListings, type DbListing } from "@/lib/listings-db";
 
-const liveListings = getLiveListings();
-const liveCount = liveListings.length;
+export default async function TrustSection() {
+  const liveListings = await fetchLiveListings();
+  const liveCount = liveListings.length;
 
-export default function TrustSection() {
   return (
     <section className="py-12 bg-white border-b border-slate-100">
       <div className="max-w-5xl mx-auto px-6">
@@ -25,7 +25,7 @@ export default function TrustSection() {
           <span>Built in Malaysia, for Malaysia</span>
         </div>
 
-        {/* Featured businesses — only shown if there are verified live listings */}
+        {/* Featured businesses — only shown if there are live listings */}
         {liveListings.length >= 2 && (
           <div className="grid sm:grid-cols-2 gap-4 mb-10">
             <FeaturedCard listing={liveListings[0]} />
@@ -39,7 +39,6 @@ export default function TrustSection() {
           </div>
         )}
 
-        {/* Platform launch message — shown when no verified listings yet */}
         {liveListings.length === 0 && (
           <div className="bg-brand-light border border-indigo-200 rounded-2xl p-6 text-center mb-10 max-w-lg mx-auto">
             <p className="text-sm font-semibold text-brand mb-1">
@@ -86,7 +85,7 @@ export default function TrustSection() {
   );
 }
 
-function FeaturedCard({ listing }: { listing: SeedListing }) {
+function FeaturedCard({ listing }: { listing: DbListing }) {
   const isReno = listing.industry === "renovation";
   return (
     <Link

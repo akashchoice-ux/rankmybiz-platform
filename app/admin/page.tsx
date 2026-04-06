@@ -1,11 +1,9 @@
 import Link from "next/link";
 import Card from "@/app/components/ui/Card";
 import StatusBadge from "@/app/components/ui/StatusBadge";
-import { SEED_LISTINGS, getAdminStats } from "@/lib/seed-data";
+import { fetchAllListingsForAdmin } from "@/lib/listings-db";
+import type { ListingStatus } from "@/types";
 
-const stats = getAdminStats();
-
-// Format date for display
 function fmtDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-MY", {
     day: "numeric",
@@ -14,15 +12,21 @@ function fmtDate(iso: string) {
   });
 }
 
-// Recent submissions — sorted by submitted_at desc, take first 6
-const recentListings = [...SEED_LISTINGS]
-  .sort(
-    (a, b) =>
-      new Date(b.submitted_at).getTime() - new Date(a.submitted_at).getTime()
-  )
-  .slice(0, 6);
-
-export default function AdminPage() {
+export default async function AdminPage() {
+  const allListings = await fetchAllListingsForAdmin();
+  const stats = {
+    total_listings: allListings.length,
+    pending_review: allListings.filter((l) => l.status === "pending_review").length,
+    pending_payment_verification: allListings.filter((l) => l.status === "pending_payment").length,
+    live: allListings.filter((l) => l.status === "live").length,
+    total_revenue_myr: allListings
+      .filter((l) => l.status === "live")
+      .reduce((sum, l) => {
+        const prices: Record<string, number> = { pkg_free: 0, pkg_premium: 49, pkg_ultra: 149 };
+        return sum + (prices[l.package_id] ?? 0);
+      }, 0),
+  };
+  const recentListings = allListings.slice(0, 6);
   return (
     <div className="max-w-5xl mx-auto">
       {/* Header */}
@@ -67,7 +71,7 @@ export default function AdminPage() {
             </span>
           </div>
           <div className="divide-y divide-slate-50">
-            {SEED_LISTINGS
+            {allListings
               .filter((l) => l.status === "pending_review")
               .map((l) => (
                 <Link
@@ -106,7 +110,7 @@ export default function AdminPage() {
             </span>
           </div>
           <div className="divide-y divide-slate-50">
-            {SEED_LISTINGS
+            {allListings
               .filter((l) => l.status === "pending_payment")
               .map((l) => (
                 <Link
@@ -166,7 +170,7 @@ export default function AdminPage() {
                   <td className="px-5 py-3.5 text-slate-500">{l.package_name}</td>
                   <td className="px-5 py-3.5 text-slate-400">{fmtDate(l.submitted_at)}</td>
                   <td className="px-5 py-3.5">
-                    <StatusBadge status={l.status} />
+                    <StatusBadge status={l.status as ListingStatus} />
                   </td>
                   <td className="px-5 py-3.5 text-right">
                     <Link

@@ -27,17 +27,25 @@ export default function AdminReviewPanel({
     setIsLoading(true);
     setSuccess("");
     try {
-      // TODO: Call Supabase update for listing status + create listing_review record
-      await new Promise((res) => setTimeout(res, 800)); // placeholder
+      const res = await fetch("/api/admin/listings", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          listing_id: listingId,
+          action,
+          reason: rejectionReason || undefined,
+        }),
+      });
 
-      const nextStatus: Record<string, ListingStatus> = {
-        approve: "live",
-        reject: "rejected",
-        verify_payment: "pending_review",  // bank transfer confirmed → enters review queue
-        suspend: "suspended",
-        reinstate: "live",
-      };
-      setStatus(nextStatus[action]);
+      if (!res.ok) {
+        const data = await res.json();
+        setSuccess("");
+        alert(data.error ?? "Action failed.");
+        return;
+      }
+
+      const data = await res.json();
+      setStatus(data.status as ListingStatus);
       setSuccess(
         action === "approve"
           ? "Listing approved and is now live!"

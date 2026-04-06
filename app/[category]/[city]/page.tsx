@@ -6,7 +6,7 @@ import {
   buildCategoryPageDescription,
   ALL_CATEGORIES_STATIC,
 } from "@/lib/constants";
-import { getListingsForCategoryCity } from "@/lib/seed-data";
+import { fetchListingsForCategoryCity } from "@/lib/listings-db";
 import Breadcrumbs from "@/app/components/Breadcrumbs";
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const catMeta = getCategoryMeta(category);
   const cityLabel = cityParamToLabel(city);
-  const listings = getListingsForCategoryCity(category, city);
+  const listings = await fetchListingsForCategoryCity(category, city);
 
   const title = buildCategoryPageTitle(catMeta?.label ?? category, cityLabel);
   const description = buildCategoryPageDescription(
@@ -67,7 +67,7 @@ export default async function CategoryCityPage({ params }: Props) {
 
   const catMeta = getCategoryMeta(category);
   const cityLabel = cityParamToLabel(city);
-  const listings = getListingsForCategoryCity(category, city);
+  const listings = await fetchListingsForCategoryCity(category, city);
 
   const jsonLd = {
     "@context": "https://schema.org",

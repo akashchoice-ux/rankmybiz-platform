@@ -5,7 +5,7 @@ import Breadcrumbs from "@/app/components/Breadcrumbs";
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
 import { ALL_CATEGORIES_STATIC, MY_STATES, PLATFORM_INDUSTRIES } from "@/lib/constants";
-import { getFilteredListings } from "@/lib/seed-data";
+import { fetchFilteredListings } from "@/lib/listings-db";
 
 export const metadata: Metadata = {
   title: "Business Listings — Verified Malaysian Businesses",
@@ -24,7 +24,7 @@ export default async function ListingsPage({ searchParams }: Props) {
   const stateFilter = (params?.state as string) ?? "";
   const industryFilter = (params?.industry as string) ?? "";
 
-  const filtered = getFilteredListings({
+  const filtered = await fetchFilteredListings({
     category: categoryFilter || undefined,
     state: stateFilter || undefined,
     industry: industryFilter || undefined,
@@ -131,11 +131,12 @@ export default async function ListingsPage({ searchParams }: Props) {
                 </p>
                 {filtered.map((l) => {
                   const catMeta = ALL_CATEGORIES_STATIC.find(
-                    (c) => c.slug === l.categorySlug
+                    (c) => c.slug === l.category_slug
                   );
-                  const isHalal = l.custom_attributes.halal_certified === true;
-                  const minPax = l.custom_attributes.min_pax as number | null;
-                  const isCidb = l.custom_attributes.cidb_registered === true;
+                  const ca = (l.custom_attributes ?? {}) as Record<string, unknown>;
+                  const isHalal = ca.halal_certified === true;
+                  const minPax = ca.min_pax as number | null;
+                  const isCidb = ca.cidb_registered === true;
 
                   return (
                     <Link

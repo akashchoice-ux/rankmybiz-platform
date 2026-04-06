@@ -1,11 +1,10 @@
 import Link from "next/link";
 import { ALL_CATEGORIES_STATIC } from "@/lib/constants";
-import { getLiveListings } from "@/lib/seed-data";
+import { fetchLiveListings } from "@/lib/listings-db";
 
-export default function FeaturedListings() {
-  const listings = getLiveListings().slice(0, 6);
+export default async function FeaturedListings() {
+  const listings = (await fetchLiveListings()).slice(0, 6);
 
-  // Don't render the section at all if there are no verified live listings
   if (listings.length === 0) return null;
 
   return (
@@ -23,10 +22,11 @@ export default function FeaturedListings() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {listings.map((l) => {
             const catMeta = ALL_CATEGORIES_STATIC.find(
-              (c) => c.slug === l.categorySlug
+              (c) => c.slug === l.category_slug
             );
-            const isHalal = l.custom_attributes.halal_certified === true;
-            const isCidb = l.custom_attributes.cidb_registered === true;
+            const attrs = l.custom_attributes as Record<string, unknown>;
+            const isHalal = attrs.halal_certified === true;
+            const isCidb = attrs.cidb_registered === true;
 
             return (
               <Link

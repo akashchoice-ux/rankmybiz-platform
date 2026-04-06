@@ -119,17 +119,32 @@ export default function SubmissionForm() {
   async function handleSubmit() {
     setIsSubmitting(true);
     try {
-      // TODO: POST to Supabase — create business_profile + listing records
-      await new Promise((res) => setTimeout(res, 800));
+      const selectedPkg = PACKAGES.find((p) => p.id === form.package_id);
+      const res = await fetch("/api/listings/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...form,
+          category_label: selectedCategory?.label ?? form.category_id,
+          package_name: selectedPkg?.name ?? "Free",
+        }),
+      });
 
-      // Free listings go straight to pending_review (no payment needed)
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.error ?? "Submission failed. Please try again.");
+        return;
+      }
+
+      // Free listings go straight to dashboard (pending_review, no payment)
       if (form.package_id === "pkg_free") {
         router.push("/dashboard/listings");
       } else {
-        router.push("/dashboard/submit/payment?listing_id=demo");
+        router.push(`/dashboard/submit/payment?listing_id=${data.listing_id}`);
       }
     } catch {
-      // handle error
+      alert("Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
     }

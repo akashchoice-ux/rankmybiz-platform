@@ -1,8 +1,7 @@
 import type { MetadataRoute } from "next";
-import { getLiveListings } from "@/lib/seed-data";
-import { ALL_CATEGORIES_STATIC } from "@/lib/constants";
+import { fetchLiveListings } from "@/lib/listings-db";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://rankmybiz.ai";
   const now = new Date().toISOString();
 
@@ -13,8 +12,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/pricing`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
   ];
 
-  // Live listing detail pages
-  const listings = getLiveListings();
+  // Live listing detail pages from DB
+  const listings = await fetchLiveListings();
   const listingPages: MetadataRoute.Sitemap = listings.map((l) => ({
     url: `${baseUrl}/listings/${l.slug}`,
     lastModified: l.live_at ?? now,
@@ -22,11 +21,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  // Category × city pages — generate for every listing's unique category+city combo
+  // Category × city pages from actual listing data
   const categoryCity = new Set<string>();
   for (const l of listings) {
     const citySlug = l.city.toLowerCase().replace(/\s+/g, "-");
-    categoryCity.add(`${l.categorySlug}/${citySlug}`);
+    categoryCity.add(`${l.category_slug}/${citySlug}`);
   }
   const categoryCityPages: MetadataRoute.Sitemap = Array.from(categoryCity).map(
     (path) => ({

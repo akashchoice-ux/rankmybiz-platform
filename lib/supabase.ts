@@ -1,4 +1,3 @@
-// @ts-nocheck — @supabase/ssr not yet installed; this file activates in Phase 3
 import { createBrowserClient } from "@supabase/ssr";
 
 // Browser-side Supabase client — use in Client Components

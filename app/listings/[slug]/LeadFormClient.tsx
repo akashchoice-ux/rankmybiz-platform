@@ -20,8 +20,11 @@ export function LeadFormClient({ listingId, listingName }: LeadFormClientProps) 
     if (!name || !phone) return;
     setIsLoading(true);
     try {
-      // TODO: POST /api/leads with { listing_id, name, phone, message, source: "listing_page" }
-      await new Promise((res) => setTimeout(res, 600));
+      await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ listing_id: listingId, name, phone, message }),
+      });
       trackLeadSubmit({ listing_id: listingId, listing_name: listingName });
       setSubmitted(true);
     } finally {
