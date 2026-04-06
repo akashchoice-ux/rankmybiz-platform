@@ -1,12 +1,13 @@
 import Link from "next/link";
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
+import TrackedCTA from "@/app/components/TrackedCTA";
 import { PACKAGES } from "@/lib/constants";
 
 export const metadata = {
-  title: "Pricing — Business Listing Plans for Malaysian SMEs",
+  title: "Pricing — Free Business Listing & Premium Plans",
   description:
-    "Get your business listed on RankMyBiz from RM99/month. Simple pricing, no hidden fees, no contracts. Compare Starter, Growth, and Pro plans.",
+    "List your business on RankMyBiz for free. Upgrade to Premium (RM49/mo) for photos and multi-city SEO, or Ultra Premium (RM149/mo) for a dedicated products & services page.",
   alternates: { canonical: "/pricing" },
 };
 
@@ -19,18 +20,18 @@ export default function PricingPage() {
         <section className="pt-32 pb-16 bg-slate-950 text-white text-center px-6">
           <div className="max-w-2xl mx-auto">
             <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-4">
-              Simple, honest pricing
+              Start free. Upgrade when you&apos;re ready.
             </h1>
             <p className="text-slate-300 text-lg leading-relaxed">
-              No setup fees. No hidden charges. Cancel anytime.
-              <br />
-              All prices in Malaysian Ringgit (MYR).
+              Every business gets a free verified listing. Add photos and
+              multi-city ranking with Premium. Get a full online presence
+              with Ultra Premium.
             </p>
           </div>
         </section>
 
         {/* Packages */}
-        <section className="py-16 px-6 max-w-6xl mx-auto">
+        <section className="py-16 px-6 max-w-5xl mx-auto">
           <div className="grid md:grid-cols-3 gap-6 items-start">
             {PACKAGES.map((pkg) => (
               <div
@@ -58,12 +59,19 @@ export default function PricingPage() {
                 </div>
 
                 <div className="mb-8">
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-4xl font-bold text-slate-900">
-                      RM{pkg.price}
-                    </span>
-                    <span className="text-slate-400 text-sm">/ month</span>
-                  </div>
+                  {pkg.price === 0 ? (
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-4xl font-bold text-success">Free</span>
+                      <span className="text-slate-400 text-sm">forever</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-4xl font-bold text-slate-900">
+                        RM{pkg.price}
+                      </span>
+                      <span className="text-slate-400 text-sm">/ month</span>
+                    </div>
+                  )}
                 </div>
 
                 <ul className="flex flex-col gap-3 mb-8 flex-1">
@@ -87,19 +95,35 @@ export default function PricingPage() {
                   ))}
                 </ul>
 
-                <Link
-                  href={`/auth/register?package=${pkg.slug}`}
+                <TrackedCTA
+                  href="/dashboard/submit"
+                  label={`Pricing — ${pkg.name}`}
                   className={[
                     "w-full h-11 rounded-xl font-semibold text-sm flex items-center justify-center transition-colors",
                     pkg.is_popular
                       ? "bg-brand text-white hover:bg-brand-dark"
+                      : pkg.price === 0
+                      ? "bg-success text-white hover:bg-emerald-600"
                       : "bg-slate-100 text-slate-700 hover:bg-slate-200",
                   ].join(" ")}
                 >
-                  Get Started with {pkg.name}
-                </Link>
+                  {pkg.price === 0 ? "List Your Business Free" : `Get ${pkg.name}`}
+                </TrackedCTA>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* Payment info */}
+        <section className="py-10 px-6 max-w-3xl mx-auto">
+          <div className="bg-slate-50 border border-slate-100 rounded-2xl p-6 text-center">
+            <h3 className="font-semibold text-slate-900 mb-2">How payment works</h3>
+            <p className="text-sm text-slate-500 leading-relaxed">
+              Free listings require no payment. For Premium and Ultra Premium,
+              payment is via <strong>bank transfer</strong> to our Malaysian bank
+              account. Upload your transfer proof and we&apos;ll verify within 1–2
+              business days. No credit card needed.
+            </p>
           </div>
         </section>
 
@@ -111,24 +135,28 @@ export default function PricingPage() {
           <div className="flex flex-col divide-y divide-slate-100">
             {[
               {
-                q: "Can I pay by bank transfer?",
-                a: "Yes. When you proceed to payment, you can choose online payment (card or FPX) or bank transfer. For bank transfers, upload your proof and we'll verify it within 1–2 business days.",
+                q: "Is the Free listing really free?",
+                a: "Yes. You get a fully SEO-optimized listing page with WhatsApp, phone, and enquiry form — forever free. No credit card, no trial period, no catch.",
+              },
+              {
+                q: "How do I verify my business?",
+                a: "You'll need to provide your SSM (Suruhanjaya Syarikat Malaysia) registration number when submitting your listing. Our team verifies it before your listing goes live.",
+              },
+              {
+                q: "How do I pay for Premium or Ultra Premium?",
+                a: "Via bank transfer to our Maybank account. After submitting your listing, you'll see the bank details and upload your transfer proof. We verify within 1–2 business days.",
               },
               {
                 q: "When does my listing go live?",
-                a: "After payment is confirmed, our team reviews your listing within 24–48 hours. Once approved, it goes live immediately.",
+                a: "After we verify your SSM number (for Free) or payment proof (for Premium/Ultra), our team reviews your listing within 24–48 hours. Once approved, it goes live immediately.",
               },
               {
-                q: "What happens after I sign up?",
-                a: "You'll be guided through a simple 5-step form to set up your business profile. Then choose your package and pay. Our team reviews and publishes your listing.",
+                q: "What's the difference between Premium and Ultra Premium?",
+                a: "Premium adds up to 5 photos and multi-city SEO pages. Ultra Premium adds everything in Premium plus a dedicated Products & Services page for your business, up to 10 photos, and top placement in search results.",
               },
               {
-                q: "Can I upgrade my plan later?",
-                a: "Yes, you can upgrade at any time from your dashboard. You'll only be charged the difference for the remaining period.",
-              },
-              {
-                q: "Is there a contract or minimum commitment?",
-                a: "No contracts, no minimum commitment. You can cancel your subscription anytime from your dashboard.",
+                q: "Can I upgrade later?",
+                a: "Yes. Start with Free, see the results, then upgrade to Premium or Ultra Premium anytime from your dashboard.",
               },
             ].map((item, i) => (
               <div key={i} className="py-5">
@@ -143,17 +171,18 @@ export default function PricingPage() {
         <section className="py-16 px-6 bg-brand-light text-center">
           <div className="max-w-xl mx-auto">
             <h2 className="text-2xl font-bold text-slate-900 mb-3">
-              Ready to get more customers?
+              Get your business found — starting today
             </h2>
             <p className="text-slate-500 text-sm mb-6">
-              Sign up in minutes. No credit card required to start.
+              No credit card. No contracts. Free forever.
             </p>
-            <Link
-              href="/auth/register"
+            <TrackedCTA
+              href="/dashboard/submit"
+              label="Pricing Bottom — Get Listed Free"
               className="inline-flex items-center justify-center h-12 px-8 bg-brand text-white font-semibold rounded-xl hover:bg-brand-dark transition-colors text-sm"
             >
-              Get Started Free
-            </Link>
+              Get Listed Free
+            </TrackedCTA>
           </div>
         </section>
       </main>

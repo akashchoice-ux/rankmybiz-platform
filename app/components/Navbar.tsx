@@ -29,7 +29,7 @@ export default function Navbar() {
             href="/dashboard/submit"
             className="bg-brand text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-brand-dark transition-colors"
           >
-            Get Listed
+            List Free
           </Link>
         </div>
         <Link

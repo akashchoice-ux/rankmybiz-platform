@@ -435,11 +435,13 @@ export interface SubmissionFormData {
 
   // Step 2: Business details
   name: string;
+  ssm_number: string;            // SSM registration number — required for verification
   description: string;
   phone: string;
   email: string;
   whatsapp: string;
   logo_url: string;
+  keywords: string;              // comma-separated search keywords
   custom_attributes: CustomAttributes;
 
   // Step 3: Location

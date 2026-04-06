@@ -11,27 +11,26 @@ export default function HeroSection() {
         </h1>
         <p className="text-lg sm:text-xl text-slate-300 max-w-2xl mx-auto mb-10 leading-relaxed">
           When customers search for businesses like yours, they find your
-          competitors. We fix that. Your business gets ranked, verified,
-          and shown to customers across multiple locations — without hiring
-          an agency.
+          competitors. We fix that — with a free, verified listing that ranks
+          on Google and AI search across Malaysia.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <TrackedCTA
             href="/dashboard/submit"
-            label="Hero — Get Listed Now"
+            label="Hero — Get Listed Free"
             className="bg-indigo-500 hover:bg-indigo-400 text-white font-semibold px-8 py-4 rounded-xl text-base transition-colors shadow-lg shadow-indigo-500/25"
           >
-            Get Listed Now — From RM99/mo
+            Get Listed Free
           </TrackedCTA>
           <Link
-            href="/listings"
+            href="/pricing"
             className="text-slate-300 hover:text-white font-medium px-8 py-4 rounded-xl border border-slate-700 hover:border-slate-500 text-base transition-colors"
           >
-            Browse Directory
+            Compare Plans
           </Link>
         </div>
         <p className="mt-5 text-sm text-slate-500">
-          No contracts · Cancel anytime · Results in days, not months
+          Free forever · No credit card · SSM verified businesses only
         </p>
       </div>
     </section>

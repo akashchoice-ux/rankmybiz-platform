@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     template: "%s | RankMyBiz",
   },
   description:
-    "List your business on RankMyBiz and get found on Google, AI search, and local directories across Malaysia. Generate leads, rank in multiple locations, and grow — no SEO agency needed. From RM99/month.",
+    "List your business on RankMyBiz for free and get found on Google, AI search, and local directories across Malaysia. SSM-verified listings, lead generation, and multi-location SEO — no agency needed.",
   keywords: [
     "business listing Malaysia",
     "get customers online Malaysia",

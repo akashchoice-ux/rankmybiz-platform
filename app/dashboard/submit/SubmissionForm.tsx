@@ -24,11 +24,13 @@ const EMPTY_FORM: SubmissionFormData = {
   subcategory_id: "",
   // Step 1
   name: "",
+  ssm_number: "",
   description: "",
   phone: "",
   email: "",
   whatsapp: "",
   logo_url: "",
+  keywords: "",
   custom_attributes: {},
   // Step 2
   address: "",
@@ -106,7 +108,7 @@ export default function SubmissionForm() {
   function canProceed(): boolean {
     if (step === 0) return !!(form.industry_id && form.category_id);
     if (step === 1)
-      return !!(form.name && form.description && form.phone && form.email);
+      return !!(form.name && form.ssm_number && form.description && form.phone && form.email);
     if (step === 2)
       return !!(form.address && form.city && form.state && form.postcode);
     if (step === 3) return true; // online presence optional
@@ -119,7 +121,13 @@ export default function SubmissionForm() {
     try {
       // TODO: POST to Supabase — create business_profile + listing records
       await new Promise((res) => setTimeout(res, 800));
-      router.push("/dashboard/submit/payment?listing_id=demo");
+
+      // Free listings go straight to pending_review (no payment needed)
+      if (form.package_id === "pkg_free") {
+        router.push("/dashboard/listings");
+      } else {
+        router.push("/dashboard/submit/payment?listing_id=demo");
+      }
     } catch {
       // handle error
     } finally {
@@ -287,6 +295,14 @@ export default function SubmissionForm() {
               onChange={(e) => update("name", e.target.value)}
               required
             />
+            <Input
+              label="SSM Registration Number"
+              placeholder="e.g. 202301012345 (12 digits)"
+              value={form.ssm_number}
+              onChange={(e) => update("ssm_number", e.target.value)}
+              required
+              hint="Your Suruhanjaya Syarikat Malaysia registration number. Required to verify your business is real."
+            />
             <Textarea
               label="Business Description"
               placeholder="Tell customers what makes your business special — your specialties, story, or what you offer."
@@ -295,6 +311,13 @@ export default function SubmissionForm() {
               rows={4}
               required
               hint="Aim for 50–200 words. This appears on your public listing."
+            />
+            <Input
+              label="Search Keywords"
+              placeholder="e.g. wedding catering, halal buffet, corporate event KL"
+              value={form.keywords}
+              onChange={(e) => update("keywords", e.target.value)}
+              hint="What should customers search to find you? Comma-separated. Helps your listing rank better."
             />
             <div className="grid grid-cols-2 gap-4">
               <Input
@@ -522,10 +545,16 @@ export default function SubmissionForm() {
                       <p className="text-xs text-slate-500">{pkg.description}</p>
                     </div>
                     <div className="text-right shrink-0">
-                      <span className="text-xl font-bold text-slate-900">
-                        RM{pkg.price}
-                      </span>
-                      <span className="text-xs text-slate-400">/mo</span>
+                      {pkg.price === 0 ? (
+                        <span className="text-xl font-bold text-success">Free</span>
+                      ) : (
+                        <>
+                          <span className="text-xl font-bold text-slate-900">
+                            RM{pkg.price}
+                          </span>
+                          <span className="text-xs text-slate-400">/mo</span>
+                        </>
+                      )}
                     </div>
                   </div>
                   <ul className="mt-3 grid grid-cols-1 gap-1">
@@ -571,12 +600,14 @@ export default function SubmissionForm() {
               </h3>
               <div className="bg-slate-50 rounded-xl p-4 text-sm space-y-2">
                 <Row label="Name" value={form.name} />
+                <Row label="SSM Number" value={form.ssm_number} />
                 <Row
                   label="Category"
                   value={selectedCategory?.label ?? form.category_id}
                 />
                 <Row label="Phone" value={form.phone} />
                 <Row label="Email" value={form.email} />
+                {form.keywords && <Row label="Keywords" value={form.keywords} />}
               </div>
             </div>
             <div>
@@ -598,7 +629,7 @@ export default function SubmissionForm() {
                     {selectedPackage.name}
                   </span>
                   <span className="font-bold text-slate-900">
-                    RM{selectedPackage.price}/month
+                    {selectedPackage.price === 0 ? "Free" : `RM${selectedPackage.price}/month`}
                   </span>
                 </div>
               </div>
@@ -630,7 +661,7 @@ export default function SubmissionForm() {
             isLoading={isSubmitting}
             disabled={!canProceed()}
           >
-            Submit &amp; Choose Payment
+            {form.package_id === "pkg_free" ? "Submit Listing" : "Submit & Choose Payment"}
           </Button>
         )}
       </div>
