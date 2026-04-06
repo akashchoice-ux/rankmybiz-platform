@@ -119,10 +119,32 @@ export default async function ListingsPage({ searchParams }: Props) {
           {/* Results */}
           <main className="lg:col-span-3">
             {filtered.length === 0 ? (
-              <div className="bg-white rounded-2xl border border-slate-100 shadow-sm py-16 text-center">
-                <p className="text-slate-400 text-sm">
-                  No listings found for this filter.
+              <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-10 text-center">
+                <div className="w-14 h-14 rounded-2xl bg-brand-light flex items-center justify-center mx-auto mb-5">
+                  <svg className="w-7 h-7 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                  </svg>
+                </div>
+                <h2 className="text-lg font-semibold text-slate-900 mb-2">
+                  No listings found
+                </h2>
+                <p className="text-slate-500 text-sm mb-5 max-w-sm mx-auto">
+                  Try a different category or state filter, or be the first business listed here.
                 </p>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <Link
+                    href="/listings"
+                    className="text-brand text-sm font-semibold hover:underline"
+                  >
+                    Clear all filters
+                  </Link>
+                  <Link
+                    href="/dashboard/submit"
+                    className="inline-flex items-center gap-2 bg-brand text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-brand-dark transition-colors"
+                  >
+                    List Your Business Free
+                  </Link>
+                </div>
               </div>
             ) : (
               <div className="flex flex-col gap-4">

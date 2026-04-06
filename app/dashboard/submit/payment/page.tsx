@@ -1,7 +1,7 @@
 import PaymentFlow from "./PaymentFlow";
 
 export const metadata = {
-  title: "Choose Payment — RankMyBiz",
+  title: "Complete Payment",
 };
 
 type Props = {

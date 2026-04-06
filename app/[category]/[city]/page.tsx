@@ -57,6 +57,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     openGraph: { title, description, url: `/${category}/${city}`, type: "website" },
     twitter: { card: "summary", title, description },
+    // noindex pages with no listings — avoid thin content penalty
+    ...(listings.length === 0 ? { robots: { index: false, follow: true } } : {}),
   };
 }
 
@@ -154,17 +156,42 @@ export default async function CategoryCityPage({ params }: Props) {
 
         <div className="max-w-4xl mx-auto px-4 py-8">
           {listings.length === 0 ? (
-            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm py-16 text-center">
-              <p className="text-slate-400 text-sm mb-4">
-                No verified {catMeta?.label.toLowerCase() ?? category} businesses
-                found in {cityLabel} yet.
+            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-10 text-center">
+              <div className="w-14 h-14 rounded-2xl bg-brand-light flex items-center justify-center mx-auto mb-5">
+                <span className="text-2xl">{catMeta?.icon ?? "📋"}</span>
+              </div>
+              <h2 className="text-lg font-semibold text-slate-900 mb-2">
+                Be the first {catMeta?.label.toLowerCase() ?? category} business listed in {cityLabel}
+              </h2>
+              <p className="text-slate-500 text-sm mb-6 max-w-sm mx-auto">
+                There are no verified {catMeta?.label.toLowerCase() ?? category} businesses in {cityLabel} yet. Get listed for free and be the first result customers see.
               </p>
               <Link
                 href="/dashboard/submit"
-                className="inline-flex items-center gap-2 bg-brand text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-brand-dark transition-colors"
+                className="inline-flex items-center gap-2 bg-brand text-white text-sm font-semibold px-6 py-3 rounded-xl hover:bg-brand-dark transition-colors"
               >
-                List Your Business →
+                List Your Business Free
               </Link>
+              <div className="mt-8 pt-6 border-t border-slate-100">
+                <p className="text-xs text-slate-400 mb-3">Browse other categories in {cityLabel}</p>
+                <div className="flex flex-wrap justify-center gap-2">
+                  {relatedCats.map((c) => (
+                    <Link
+                      key={c.slug}
+                      href={`/${c.slug}/${city}`}
+                      className="bg-slate-50 border border-slate-100 text-slate-600 text-xs font-medium px-3 py-1.5 rounded-full hover:bg-slate-100 transition-colors"
+                    >
+                      {c.icon} {c.label}
+                    </Link>
+                  ))}
+                  <Link
+                    href="/listings"
+                    className="text-brand text-xs font-semibold px-3 py-1.5"
+                  >
+                    View all →
+                  </Link>
+                </div>
+              </div>
             </div>
           ) : (
             <div className="flex flex-col gap-4">

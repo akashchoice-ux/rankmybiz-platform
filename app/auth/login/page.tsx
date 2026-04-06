@@ -4,7 +4,7 @@ import Logo from "@/app/components/brand/Logo";
 import LoginForm from "./LoginForm";
 
 export const metadata = {
-  title: "Log In — RankMyBiz",
+  title: "Log In",
 };
 
 export default function LoginPage() {

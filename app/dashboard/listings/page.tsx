@@ -4,7 +4,7 @@ import StatusBadge from "@/app/components/ui/StatusBadge";
 import { SEED_LISTINGS } from "@/lib/seed-data";
 
 export const metadata = {
-  title: "My Listings — RankMyBiz",
+  title: "My Listings",
 };
 
 // In production this will query listings where user_id = current user

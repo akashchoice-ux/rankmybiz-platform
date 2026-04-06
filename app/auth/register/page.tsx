@@ -4,7 +4,7 @@ import RegisterForm from "./RegisterForm";
 import { PACKAGES } from "@/lib/constants";
 
 export const metadata = {
-  title: "Create Account — RankMyBiz",
+  title: "Create Account",
 };
 
 type Props = {

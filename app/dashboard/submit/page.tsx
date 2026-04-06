@@ -2,7 +2,7 @@ import SubmissionForm from "./SubmissionForm";
 import StartListingTracker from "./StartListingTracker";
 
 export const metadata = {
-  title: "Submit Listing — RankMyBiz",
+  title: "Submit Your Business Listing",
 };
 
 export default function SubmitPage() {
