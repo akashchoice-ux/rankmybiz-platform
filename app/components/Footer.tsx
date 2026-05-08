@@ -110,6 +110,9 @@ export default function Footer() {
               <Link href="/dashboard/submit" className="hover:text-slate-300 transition-colors">
                 List Your Business
               </Link>
+              <Link href="/seo-audit" className="hover:text-slate-300 transition-colors">
+                Free SEO Audit
+              </Link>
             </div>
             <div className="flex flex-col gap-2.5">
               <span className="text-slate-300 font-semibold text-xs uppercase tracking-wider">
