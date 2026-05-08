@@ -14,6 +14,12 @@ export default function Navbar() {
             Listings
           </Link>
           <Link
+            href="/seo-audit"
+            className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
+          >
+            Free SEO Audit
+          </Link>
+          <Link
             href="/pricing"
             className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
           >
